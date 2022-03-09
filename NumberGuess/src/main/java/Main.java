@@ -6,6 +6,7 @@ public class Main {
 
     public static void newGame(Scanner scanner, String name, int min, int max, int allowedGuesses) {
         int guesses = 0;
+        int guess;
         int randomNum = ThreadLocalRandom.current().nextInt(min, max + 1);
 
         System.out.println(String.format("I am thinking of a number between %s and %s. You have %s guesses.",
@@ -14,9 +15,18 @@ public class Main {
                 String.valueOf(allowedGuesses)) );
 
         while(true){
-            if (scanner.hasNextInt()) {
+
+                try{
+                    String guessString = scanner.nextLine();
+                    guess = Integer.parseInt(guessString);
+                    if (guess > max || guess < min) throw new Exception();
+                }
+                catch(Exception e){
+                    System.out.printf("Please provide a number between %s and %s.\n", min, max);
+                    continue;
+                }
+
                 guesses++;
-                int guess = scanner.nextInt();
                 if (guess == randomNum){
                     System.out.printf(String.format("Good job %s, you guessed my number in %s guesses!", name, guesses ));
                     break;
@@ -29,27 +39,38 @@ public class Main {
                     System.out.printf(String.format("Sorry %s, out of guesses. Only %s guesses allowed!", name, allowedGuesses ));
                     break;
                 }
-            }
         }
     }
 
     public static void main(String[] args) {
         int min = 1, max = 20, allowedGuesses = 6;
         Scanner in = new Scanner(System.in);
+        String name;
 
-        System.out.println("What is your name?");
-        try{
-            String name = in.nextLine();
-        }
-        catch(){
-
+        while(true){
+            System.out.printf("What is your name?\n");
+            try{
+                name = in.nextLine();
+                if (name.length() == 0) throw new Exception();
+                break;
+            }
+            catch(Exception e){
+                continue;
+            }
         }
 
         newGame(in, name, min, max, allowedGuesses);
         System.out.printf("\nPlay again? (y/n)\n");
 
         do {
-            String answer = in.nextLine();
+            String answer;
+            try{
+                answer = in.nextLine();
+            }
+            catch(Exception e){
+                throw e;
+            }
+
             if (answer.equals("y")) {
                 newGame(in, name, min, max, allowedGuesses);
                 System.out.printf("\nPlay again? (y/n)\n");
@@ -57,6 +78,9 @@ public class Main {
             else if (answer.equals("n")) {
                 System.out.printf("\nBye for now");
                 break;
+            }
+            else{
+                System.out.printf("\nPlay again? (y/n)\n");
             }
         } while (true);
     }
