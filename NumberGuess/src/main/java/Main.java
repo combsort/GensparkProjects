@@ -4,39 +4,57 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class Main {
 
+    public static final String CORRECT = "Good job!";
+    public static final String HIGH = "Too high";
+    public static final String LOW = "Too low";
+
+    public static String getResult(int guess, int number){
+        if (guess == number) return CORRECT;
+        else if (guess > number) return HIGH;
+        else return LOW;
+    }
+
+    public static int getGuess(Scanner scanner, int max, int min){
+        int guess;
+        while(true){
+            try{
+                String guessString = scanner.nextLine();
+                guess = Integer.parseInt(guessString);
+                if (guess > max || guess < min) throw new Exception();
+                return guess;
+            }
+            catch(Exception e){
+                System.out.printf("Please provide a number between %s and %s.\n", min, max);
+                continue;
+            }
+        }
+    }
+
     public static void newGame(Scanner scanner, String name, int min, int max, int allowedGuesses) {
         int guesses = 0;
         int guess;
         int randomNum = ThreadLocalRandom.current().nextInt(min, max + 1);
 
-        System.out.println(String.format("I am thinking of a number between %s and %s. You have %s guesses.",
+        System.out.printf("I am thinking of a number between %s and %s. You have %s guesses.\n",
                 String.valueOf(min),
                 String.valueOf(max),
-                String.valueOf(allowedGuesses)) );
+                String.valueOf(allowedGuesses) );
 
         while(true){
-
-                try{
-                    String guessString = scanner.nextLine();
-                    guess = Integer.parseInt(guessString);
-                    if (guess > max || guess < min) throw new Exception();
-                }
-                catch(Exception e){
-                    System.out.printf("Please provide a number between %s and %s.\n", min, max);
-                    continue;
-                }
-
+                guess = getGuess(scanner,max,min);
                 guesses++;
-                if (guess == randomNum){
-                    System.out.printf(String.format("Good job %s, you guessed my number in %s guesses!", name, guesses ));
+
+                String result = getResult(guess, randomNum);
+                System.out.println(result);
+                if (result.equals(CORRECT)) {
+                    System.out.printf("You guessed my number in %s guesses!", guesses);
                     break;
                 }
-                else if (guess > randomNum) System.out.printf("Too high");
-                else if (guess < randomNum) System.out.printf("Too low");
-                System.out.printf(String.format("; %s guesses remain\n", allowedGuesses-guesses ));
 
+                // check guess limit
+                System.out.printf("%s guesses remain\n", allowedGuesses-guesses );
                 if (guesses >= allowedGuesses){
-                    System.out.printf(String.format("Sorry %s, out of guesses. Only %s guesses allowed!", name, allowedGuesses ));
+                    System.out.printf("Sorry %s, out of guesses. Only %s guesses allowed!", name, allowedGuesses );
                     break;
                 }
         }
