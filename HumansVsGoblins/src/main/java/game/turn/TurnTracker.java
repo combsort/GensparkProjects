@@ -1,14 +1,19 @@
 package game.turn;
 
-import game.turn.logic.SkipGoblinLogic;
+import game.Roster;
+import game.turn.logic.PlayersHuman;
 import game.turn.logic.TurnLogic;
+import interactable.creature.Creature;
 
 public class TurnTracker {
 
     private TurnLogic turnLogic;
+    private Roster roster;
+    private Creature activeCreature;
 
-    TurnTracker(){
-        turnLogic = new SkipGoblinLogic();
+    public TurnTracker(Roster roster){
+        turnLogic = new PlayersHuman();
+        this.roster = roster;
     }
 
 }

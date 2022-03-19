@@ -7,9 +7,12 @@ public class Game {
 
     private TurnTracker turnTracker;
     private Board board;
+    private Roster roster;
 
     Game(){
-        turnTracker = new TurnTracker();
+        roster = new Roster();
+        board = new Board();
+        turnTracker = new TurnTracker(roster);
     }
 
 }
