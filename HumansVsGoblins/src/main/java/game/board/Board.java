@@ -1,5 +1,6 @@
 package game.board;
 
+import game.BattleManager;
 import game.Roster;
 import interactable.Interactable;
 import interactable.creature.Creature;
@@ -8,13 +9,18 @@ import ui.display.Displayable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import static javax.swing.UIManager.get;
+
 public class Board implements Displayable {
 
     ArrayList<ArrayList<Tile>> grid;
     HashMap<Interactable, int[]> locations;
+    BattleManager battleManager;
 
-    public Board(Roster roster){
+    public Board(Roster roster, BattleManager battleManager){
         locations = new HashMap<>();
+        this.battleManager = battleManager;
+
 
         Creature creature1 = roster.getCreatures().get(0);
         Creature creature2 = roster.getCreatures().get(1);
@@ -25,11 +31,11 @@ public class Board implements Displayable {
 
         ArrayList<Interactable> tile9Contents = new ArrayList<>();
         tile9Contents.add(creature2);
-        locations.put(creature2, new int[] {2,2});
+        locations.put(creature2, new int[] {0,1});
 
         ArrayList<Tile> row1 = new ArrayList<>();
         row1.add(new Tile(tile1Contents));
-        row1.add(new Tile());
+        row1.add(new Tile(tile9Contents));
         row1.add(new Tile());
         ArrayList<Tile> row2 = new ArrayList<>();
         row2.add(new Tile());
@@ -38,7 +44,7 @@ public class Board implements Displayable {
         ArrayList<Tile> row3 = new ArrayList<>();
         row3.add(new Tile());
         row3.add(new Tile());
-        row3.add(new Tile(tile9Contents));
+        row3.add(new Tile());
 
         ArrayList<ArrayList<Tile>> newGrid = new ArrayList<>();
         newGrid.add(row1);
@@ -55,10 +61,11 @@ public class Board implements Displayable {
         }
     }
 
-    private Tile getDestTile(int dstY, int dstX) throws InvalidDestException{
+    private Tile getValidDst(int dstY, int dstX) throws InvalidDestException{
         try {
             Tile dstTile = grid.get(dstY).get(dstX);
-            if (!dstTile.isPassable()) throw new InvalidDestException("Impassable tile");
+            if (dstTile.isOccupied()) return dstTile;
+            else if (!dstTile.isPassable()) throw new InvalidDestException("Impassable tile");
             return dstTile;
         }
         catch (IndexOutOfBoundsException e){
@@ -71,6 +78,8 @@ public class Board implements Displayable {
         srcTile.getContents().remove(i);
         dstTile.addToContents(i);
 
+        srcTile.calculateOccupied();
+        dstTile.setOccupied(true);
         locations.put(i, new int[] {dstY, dstX});
     }
 
@@ -84,24 +93,48 @@ public class Board implements Displayable {
 
         switch (direction) {
             case 'n':
-                dstTile = getDestTile(srcY-distance, srcX);
-                changeInteractableLocation(srcTile,dstTile,srcY-distance,srcX);
+                dstTile = getValidDst(srcY-distance, srcX);
+                if (dstTile.isOccupied()){
+                    battleManager.doBattle(creature, dstTile.getFirstOccupant());
+                }
+                else changeInteractableLocation(srcTile,dstTile,srcY-distance,srcX);
                 break;
+
             case 's':
-                dstTile = getDestTile(srcY+distance, srcX);
-                changeInteractableLocation(srcTile,dstTile,srcY+distance,srcX);
+                dstTile = getValidDst(srcY+distance, srcX);
+                if (dstTile.isOccupied()){
+                    battleManager.doBattle(creature, dstTile.getFirstOccupant());
+                }
+                else changeInteractableLocation(srcTile,dstTile,srcY+distance,srcX);
                 break;
 
             case 'e':
-                dstTile = getDestTile(srcY, srcX+distance);
-                changeInteractableLocation(srcTile,dstTile,srcY,srcX+distance);
+                dstTile = getValidDst(srcY, srcX+distance);
+                if (dstTile.isOccupied()){
+                    battleManager.doBattle(creature, dstTile.getFirstOccupant());
+                }
+                else changeInteractableLocation(srcTile,dstTile,srcY,srcX+distance);
                 break;
+
             case 'w':
-                dstTile = getDestTile(srcY, srcX-distance);
-                changeInteractableLocation(srcTile,dstTile,srcY,srcX-distance);
+                dstTile = getValidDst(srcY, srcX-distance);
+                if (dstTile.isOccupied()){
+                    battleManager.doBattle(creature, dstTile.getFirstOccupant());
+                }
+                else changeInteractableLocation(srcTile,dstTile,srcY,srcX-distance);
                 break;
+
         }
 
+    }
+
+    public void clearCreature(Creature creature){
+        int[] coords = locations.get(creature);
+        int y=coords[0], x=coords[1];
+        Tile targetTile = grid.get(y).get(x);
+        locations.remove(creature);
+        targetTile.getContents().remove(creature);
+        targetTile.calculateOccupied();
     }
 
     public ArrayList<ArrayList<Tile>> getGrid() {

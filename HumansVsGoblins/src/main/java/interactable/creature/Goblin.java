@@ -5,7 +5,7 @@ import interactable.Interactable;
 public class Goblin extends CreatureConcrete {
 
     public Goblin() {
-
+        this.name = "Goblin";
     }
 
     @Override
@@ -17,6 +17,7 @@ public class Goblin extends CreatureConcrete {
     public void loot(){
 
     }
+
 
     @Override
     public void interact(){

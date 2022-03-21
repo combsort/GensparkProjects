@@ -6,6 +6,7 @@ public class Human extends CreatureConcrete {
 
     public Human(){
         super();
+        this.name = "Human";
     }
 
     @Override

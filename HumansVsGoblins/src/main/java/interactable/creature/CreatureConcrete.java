@@ -3,11 +3,17 @@ package interactable.creature;
 public class CreatureConcrete implements Creature {
 
     int strength;
-    String stamina;
+    int stamina;
+    int health;
     String name;
     String color;
 
     public CreatureConcrete(){
+        this.strength = 2;
+        this.stamina = 4;
+        this.health = 4;
+        this.name = "CreatureConcrete";
+        this.color = "grey";
     }
 
     @Override
@@ -20,21 +26,34 @@ public class CreatureConcrete implements Creature {
         return 1;
     }
 
+    public int attack(Creature creature){
+        int maxDmg = this.getStrength();
+        int minDmg = 0;
+        int result = minDmg + (int)(Math.random() * ((maxDmg - minDmg) + 1));
+        return result;
+    }
+
     @Override
     public void loot() {
 
     }
 
+    public int getHealth() {
+        return health;
+    }
+    public void setHealth(int health) {
+        this.health = health;
+    }
     public int getStrength() {
         return strength;
     }
     public void setStrength(int strength) {
         this.strength = strength;
     }
-    public String getStamina() {
+    public int getStamina() {
         return stamina;
     }
-    public void setStamina(String stamina) {
+    public void setStamina(int stamina) {
         this.stamina = stamina;
     }
     public String getName() {

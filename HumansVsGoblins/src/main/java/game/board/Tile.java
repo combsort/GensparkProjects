@@ -47,6 +47,13 @@ public class Tile implements Holder, Displayable {
         return this.contents;
     }
 
+    public Creature getFirstOccupant(){
+        for (Interactable i : contents){
+            if (i instanceof Creature) return (Creature) i;
+        }
+        return null;
+    }
+
     public void addToContents(Interactable i){
         contents.add(i);
     }
@@ -66,14 +73,19 @@ public class Tile implements Holder, Displayable {
     public boolean calculateOccupied(){
         for (Interactable i : contents){
             if (i instanceof Creature){
+                this.occupied = true;
                 return true;
             }
         }
+        this.occupied = false;
         return false;
     }
 
     public boolean isOccupied(){
         return occupied;
+    }
+    public void setOccupied(boolean occupied){
+        this.occupied = occupied;
     }
 
 }

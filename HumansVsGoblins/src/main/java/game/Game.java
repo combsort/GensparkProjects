@@ -2,12 +2,14 @@ package game;
 
 import game.board.Board;
 import game.turn.TurnTracker;
+import interactable.creature.Creature;
+import interactable.creature.CreatureConcrete;
 import interactable.creature.Goblin;
 import interactable.creature.Human;
 import ui.UserInput;
 import ui.UserInterface;
 
-public class Game {
+public class Game implements BattleManager{
 
     private TurnTracker turnTracker;
     private Board board;
@@ -21,10 +23,22 @@ public class Game {
         roster.addCreature(new Human());
         roster.addCreature(new Goblin());
 
-        board = new Board(roster);
+        board = new Board(roster, this);
         turnTracker = new TurnTracker(roster);
         ui = new UserInterface();
         input = new UserInput(ui);
+    }
+
+    public void doBattle(Creature c1, Creature c2){
+        int dmg = c1.attack(c2);
+        c2.setHealth(c2.getHealth()-dmg);
+        ui.displayMessage(ui.battleResultMsg(c1,c2,dmg));
+
+        if (c2.getHealth() <= 0){
+            ui.displayMessage(ui.creatureDeathMsg(c2));
+            board.clearCreature(c2);
+        }
+
     }
 
     private char handleMovement(){
@@ -67,7 +81,7 @@ public class Game {
         do {
             ui.renderBoard(board);
             if (tier1Options() == 'q') break;
-
+            turnTracker.nextTurn();
         }while(true);
     }
 
