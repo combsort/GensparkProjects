@@ -3,7 +3,11 @@ package interactable.creature;
 import interactable.Interactable;
 
 public class Goblin implements Creature, Interactable {
-    public void move(){
+
+    public Goblin() {
+    }
+
+    public void move(int x, int y){
 
     }
 
@@ -15,19 +19,8 @@ public class Goblin implements Creature, Interactable {
 
     }
 
-    int strength;
-    String stamina;
-    String name;
-    String color;
-
-    // Do not change the constructor for goblin please!
-    public Goblin() {
-    }
-    public Goblin(int strength){
-        this.strength = strength;
+    public char getSymbol(){
+        return 'o';
     }
 
-    public int getStrength() {
-        return strength;
-    }
 }

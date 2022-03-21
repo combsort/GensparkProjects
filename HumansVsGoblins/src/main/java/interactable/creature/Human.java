@@ -4,7 +4,7 @@ import interactable.Interactable;
 
 public class Human implements Creature, Interactable {
 
-    public void move() {
+    public void move(int x, int y) {
 
     }
 
@@ -14,6 +14,14 @@ public class Human implements Creature, Interactable {
 
     public void interact() {
 
+    }
+
+    public Human(){
+
+    }
+
+    public char getSymbol(){
+        return '@';
     }
 
 }

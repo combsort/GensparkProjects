@@ -1,7 +1,11 @@
 package game.board;
 
+import interactable.Interactable;
+
+import java.util.List;
+
 public interface Holder {
 
-    char displayedSymbol();
-
+    List<Interactable> getContents();
+    List<Interactable> prioritizeContents();
 }

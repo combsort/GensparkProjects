@@ -12,7 +12,7 @@ public class TurnTracker {
     private Creature activeCreature;
 
     public TurnTracker(Roster roster){
-        turnLogic = new PlayersHuman();
+        turnLogic = new PlayersHuman(roster);
         this.roster = roster;
     }
 
