@@ -28,10 +28,18 @@ public class Game {
     }
 
     private char handleMovement(){
-        ui.displayMessage(ui.movementPrompt());
-        char direction = input.getMoveInput();
-        board.move(turnTracker.getActiveCreature(), direction);
-        return direction;
+        while (true){
+            ui.displayMessage(ui.movementPrompt());
+            char direction = input.getMoveInput();
+            try {
+                board.move(turnTracker.getActiveCreature(), direction);
+                return direction;
+            }
+            catch(Board.InvalidDestException e){
+                System.out.println(e.getMessage());
+                continue;
+            }
+        }
     }
 
     private char tier1Options(){

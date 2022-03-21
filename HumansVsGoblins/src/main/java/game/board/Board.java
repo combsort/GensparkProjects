@@ -3,8 +3,6 @@ package game.board;
 import game.Roster;
 import interactable.Interactable;
 import interactable.creature.Creature;
-import interactable.creature.Goblin;
-import interactable.creature.Human;
 import ui.display.Displayable;
 
 import java.util.ArrayList;
@@ -13,7 +11,7 @@ import java.util.HashMap;
 public class Board implements Displayable {
 
     ArrayList<ArrayList<Tile>> grid;
-    HashMap<Creature,int[]> locations;
+    HashMap<Interactable, int[]> locations;
 
     public Board(Roster roster){
         locations = new HashMap<>();
@@ -51,31 +49,56 @@ public class Board implements Displayable {
 
     }
 
-    public void move(Creature creature, char direction){
+    public class InvalidDestException extends Exception{
+        public InvalidDestException(String errorMessage) {
+            super(errorMessage);
+        }
+    }
+
+    private Tile getDestTile(int dstY, int dstX) throws InvalidDestException{
+        try {
+            Tile dstTile = grid.get(dstY).get(dstX);
+            if (!dstTile.isPassable()) throw new InvalidDestException("Impassable tile");
+            return dstTile;
+        }
+        catch (IndexOutOfBoundsException e){
+            throw new InvalidDestException("Out of bounds");
+        }
+    }
+
+    private void changeInteractableLocation(Tile srcTile, Tile dstTile, int dstY, int dstX){
+        Interactable i = srcTile.getContents().get(0); // todo: Get the correct interactable
+        srcTile.getContents().remove(i);
+        dstTile.addToContents(i);
+
+        locations.put(i, new int[] {dstY, dstX});
+    }
+
+    public void move(Creature creature, char direction) throws InvalidDestException{
         int[] location = locations.get(creature);
-        int srcX = location[0];
-        int srcY = location[1];
+        int srcY = location[0];
+        int srcX = location[1];
         Tile srcTile = grid.get(srcY).get(srcX);
+        Tile dstTile;
+        int distance = creature.getMoveDistance(direction);
 
         switch (direction) {
             case 'n':
-
+                dstTile = getDestTile(srcY-distance, srcX);
+                changeInteractableLocation(srcTile,dstTile,srcY-distance,srcX);
                 break;
             case 's':
-                Tile dstTile = grid.get(srcY+1).get(srcX);
-                locations.put(creature,new int[] {srcX, srcY+1});
-
-                // TODO: "interactable" to creature
-                Interactable myGuy = srcTile.getContents().get(0);
-                srcTile.getContents().remove(myGuy);
-                dstTile.addToContents(myGuy);
+                dstTile = getDestTile(srcY+distance, srcX);
+                changeInteractableLocation(srcTile,dstTile,srcY+distance,srcX);
                 break;
 
             case 'e':
-
+                dstTile = getDestTile(srcY, srcX+distance);
+                changeInteractableLocation(srcTile,dstTile,srcY,srcX+distance);
                 break;
             case 'w':
-
+                dstTile = getDestTile(srcY, srcX-distance);
+                changeInteractableLocation(srcTile,dstTile,srcY,srcX-distance);
                 break;
         }
 
