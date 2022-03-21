@@ -47,6 +47,10 @@ public class Tile implements Holder, Displayable {
         return this.contents;
     }
 
+    public void addToContents(Interactable i){
+        contents.add(i);
+    }
+
     public boolean isPassableTerrain() {
         return passableTerrain;
     }

@@ -2,24 +2,28 @@ package interactable.creature;
 
 import interactable.Interactable;
 
-public class Human implements Creature, Interactable {
+public class Human extends CreatureConcrete {
 
-    public void move(int x, int y) {
-
+    public Human(){
+        super();
     }
 
+    @Override
+    public int getMoveDistance(char direction){
+        return 1;
+    }
+
+    @Override
     public void loot() {
 
     }
 
+    @Override
     public void interact() {
 
     }
 
-    public Human(){
-
-    }
-
+    @Override
     public char getSymbol(){
         return '@';
     }

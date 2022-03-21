@@ -1,22 +1,13 @@
 package interactable.creature;
 
-import interactable.Interactable;
-
 public class CreatureConcrete implements Creature {
-
-    Creature creature;
 
     int strength;
     String stamina;
     String name;
     String color;
-    int x;
-    int y;
-    char symbol;
 
-    public CreatureConcrete(Creature creature){
-        this.symbol = creature.getSymbol();
-        this.creature = creature;
+    public CreatureConcrete(){
     }
 
     @Override
@@ -25,13 +16,13 @@ public class CreatureConcrete implements Creature {
     }
 
     @Override
-    public void move(int x, int y) {
-        this.creature.move(x, y);
+    public int getMoveDistance(char direction){
+        return 1;
     }
 
     @Override
     public void loot() {
-        this.creature.loot();
+
     }
 
     public int getStrength() {
@@ -59,15 +50,14 @@ public class CreatureConcrete implements Creature {
         this.color = color;
     }
     public char getSymbol(){
-        return this.symbol;
+        return '?';
     }
 
 
     @Override
     public String toString() {
         return "CreatureConcrete{" +
-                "creature=" + creature +
-                ", strength=" + strength +
+                "strength=" + strength + '\'' +
                 ", stamina='" + stamina + '\'' +
                 ", name='" + name + '\'' +
                 ", color='" + color + '\'' +

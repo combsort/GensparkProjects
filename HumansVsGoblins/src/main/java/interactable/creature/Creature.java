@@ -4,7 +4,7 @@ import interactable.Interactable;
 
 public interface Creature extends Interactable {
 
-    void move(int x, int y);
+    int getMoveDistance(char moveDirection);
     void loot();
 
 }
