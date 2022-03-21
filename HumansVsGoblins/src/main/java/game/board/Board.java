@@ -83,7 +83,15 @@ public class Board implements Displayable {
         locations.put(i, new int[] {dstY, dstX});
     }
 
-    public void move(Creature creature, char direction) throws InvalidDestException{
+    public void move(Creature creature, Tile srcTile, int dstY, int dstX) throws InvalidDestException{
+        Tile dstTile = getValidDst(dstY, dstX);
+        if (dstTile.isOccupied()){
+            battleManager.doBattle(creature, dstTile.getFirstOccupant());
+        }
+        else changeInteractableLocation(srcTile,dstTile,dstY,dstX);
+    }
+
+    public void moveSwitch(Creature creature, char direction) throws InvalidDestException{
         int[] location = locations.get(creature);
         int srcY = location[0];
         int srcX = location[1];
@@ -93,39 +101,25 @@ public class Board implements Displayable {
 
         switch (direction) {
             case 'n':
-                dstTile = getValidDst(srcY-distance, srcX);
-                if (dstTile.isOccupied()){
-                    battleManager.doBattle(creature, dstTile.getFirstOccupant());
-                }
-                else changeInteractableLocation(srcTile,dstTile,srcY-distance,srcX);
+            case 'N':
+                move(creature, srcTile,srcY-distance, srcX);
                 break;
 
             case 's':
-                dstTile = getValidDst(srcY+distance, srcX);
-                if (dstTile.isOccupied()){
-                    battleManager.doBattle(creature, dstTile.getFirstOccupant());
-                }
-                else changeInteractableLocation(srcTile,dstTile,srcY+distance,srcX);
+            case 'S':
+                move(creature, srcTile, srcY+distance, srcX);
                 break;
 
             case 'e':
-                dstTile = getValidDst(srcY, srcX+distance);
-                if (dstTile.isOccupied()){
-                    battleManager.doBattle(creature, dstTile.getFirstOccupant());
-                }
-                else changeInteractableLocation(srcTile,dstTile,srcY,srcX+distance);
+            case 'E':
+                move(creature, srcTile,srcY, srcX+distance);
                 break;
 
             case 'w':
-                dstTile = getValidDst(srcY, srcX-distance);
-                if (dstTile.isOccupied()){
-                    battleManager.doBattle(creature, dstTile.getFirstOccupant());
-                }
-                else changeInteractableLocation(srcTile,dstTile,srcY,srcX-distance);
+            case 'W':
+                move(creature, srcTile,srcY, srcX-distance);
                 break;
-
         }
-
     }
 
     public void clearCreature(Creature creature){

@@ -3,7 +3,6 @@ package game;
 import game.board.Board;
 import game.turn.TurnTracker;
 import interactable.creature.Creature;
-import interactable.creature.CreatureConcrete;
 import interactable.creature.Goblin;
 import interactable.creature.Human;
 import ui.UserInput;
@@ -46,7 +45,7 @@ public class Game implements BattleManager{
             ui.displayMessage(ui.movementPrompt());
             char direction = input.getMoveInput();
             try {
-                board.move(turnTracker.getActiveCreature(), direction);
+                board.moveSwitch(turnTracker.getActiveCreature(), direction);
                 return direction;
             }
             catch(Board.InvalidDestException e){
@@ -66,7 +65,7 @@ public class Game implements BattleManager{
 
             case 'l':
             case 'L':
-
+                ui.displayMessage("Sorry, looting not yet implemented\n");
                 return 'l';
 
             case 'q':
@@ -82,6 +81,7 @@ public class Game implements BattleManager{
             ui.renderBoard(board);
             if (tier1Options() == 'q') break;
             turnTracker.nextTurn();
+            ui.displayMessage("\n\n\n");
         }while(true);
     }
 
