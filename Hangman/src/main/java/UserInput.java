@@ -17,29 +17,26 @@ public class UserInput {
     }
 
     public char getCharInput(){
-        while (true){
-            try{
-                String input = getInput();
-                if (input.length() > 1) throw new StringLengthException("String input too long");
-                if (input.length() == 0) throw new StringLengthException("No character provided");
-                return input.charAt(0);
-            }
-            catch(StringLengthException e){
-                ui.display(ui.singleCharPrompt());
-            }
+        try{
+            String input = getInput();
+            if (input.length() > 1) throw new StringLengthException("String input too long");
+            if (input.length() == 0) throw new StringLengthException("No character provided");
+            return input.charAt(0);
+        }
+        catch(StringLengthException e){
+            ui.display(ui.singleCharPrompt());
+            return getCharInput();
         }
     }
 
     public String getInput(){
-        while(true){
-            try{
-                String input = scanner.nextLine();
-                return input;
-            }
-            catch(Exception e){
-                System.out.printf(String.format("Input error: %s", e.getMessage()));
-                continue;
-            }
+        try{
+            String input = scanner.nextLine();
+            return input;
+        }
+        catch(Exception e){
+            System.out.printf(String.format("Input error: %s", e.getMessage()));
+            return getInput();
         }
     }
 
