@@ -8,28 +8,6 @@ import java.util.Scanner;
  */
 
 public class Main {
-
-    UserInterface ui;
-    HangmanGame game;
-    UserInput input;
-
-
-
-
-
-
-
-   public static void gameLoop(UserInterface ui, HangmanGame game, UserInput input){
-        ui.display(ui.playAgainPrompt());
-        String response = input.getInput();
-
-        if (response.equals(UserInterface.STOP_STR)) return;
-
-        game.reset();
-        gameLoop(ui, game, input);
-
-    }
-
     public static void main(String[] args){
         UserInterface ui = new UserInterface();
         HangmanGame game = new HangmanGame();

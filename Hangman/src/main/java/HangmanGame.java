@@ -34,20 +34,12 @@ public class HangmanGame {
         this.correctGuesses = new HashSet<>();
         this.wrongGuesses = new HashSet<>();
     }
-    public char getNewGuess(UserInterface ui, UserInput input){
-        char guess = input.getCharInput();
-        if (alreadyGuessed(guess)) {
-            ui.display(ui.alreadyGuessedPrompt());
-            return getNewGuess(ui, input);
-        }
-        else return guess;
-    }
+
+    // high-score functions
     public void recordScore(){
         io.appendLineToFile(FileIO.SCORE_PATH, String.format("%s,%s", name, totalGuesses()));
     }
-
-    public int getHighScore(String name){
-        ArrayList<String> lines = io.getFileLines(FileIO.SCORE_PATH);
+    public int getHighScore(ArrayList<String> lines, String name){
         int[] results = lines.stream()
                 .map(s -> s.split(",",2))
                 .filter(s -> s[0].equals(name) || name.equals(""))
@@ -57,6 +49,7 @@ public class HangmanGame {
         return (results.length > 0) && (results[0] > 0) ? results[0] : -1;
     }
 
+    // game runners
     public void runGame(UserInterface ui, UserInput input){
 
         ui.display((ui.title()));
@@ -78,10 +71,10 @@ public class HangmanGame {
         else ui.display(ui.fail(getAnswer()));
 
         recordScore();
-        int highScore = getHighScore("");
-        if ( highScore == getHighScore(this.name) ) ui.display(ui.highScoreGrats(this.name,highScore));
+        ArrayList<String> lines = io.getFileLines(FileIO.SCORE_PATH);
+        int highScore = getHighScore(lines,"");
+        if ( highScore == getHighScore(lines, this.name)) ui.display(ui.highScoreGrats(this.name,highScore));
     }
-
     public void gameLoop(UserInterface ui, UserInput input){
         runGame(ui, input);
 
@@ -95,6 +88,24 @@ public class HangmanGame {
 
     }
 
+    // endgame detection
+    public boolean gameIsEnded(){
+        if (didWin() || wrongGuesses.size() >= limit) return true;
+        else return false;
+    }
+    public boolean didWin(){
+        return correctGuesses.size() == answer.length();
+    }
+
+    // guess functions
+    public char getNewGuess(UserInterface ui, UserInput input){
+        char guess = input.getCharInput();
+        if (alreadyGuessed(guess)) {
+            ui.display(ui.alreadyGuessedPrompt());
+            return getNewGuess(ui, input);
+        }
+        else return guess;
+    }
     public HashSet<Character> getCorrectGuesses() {
         return correctGuesses;
     }
@@ -112,20 +123,18 @@ public class HangmanGame {
         return correctGuesses.contains(c) || wrongGuesses.contains(c);
     }
 
-    public boolean gameIsEnded(){
-        if (didWin() || wrongGuesses.size() >= limit) return true;
-        else return false;
-    }
-
-    public boolean didWin(){
-        return correctGuesses.size() == answer.length();
-    }
-
+    // other getter/setters
     public String getAnswer() {
         return answer;
     }
-
     public void setAnswer(String answer) {
         this.answer = answer;
     }
+    public int getLimit() {
+        return limit;
+    }
+    public void setLimit(int limit) {
+        this.limit = limit;
+    }
+
 }

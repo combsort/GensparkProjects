@@ -38,7 +38,6 @@ public class UserInterface {
     public String fail(String answer) { return String.format("Sorry! The secret word was %s. Better luck next time.", answer); }
     public String highScoreGrats(String name, int guesses) { return String.format("Congrats %s, you have the high score of only %s guesses!", name, guesses); }
 
-
     public String buildGallows(int failedCount){
         FileIO io = new FileIO(); // todo
         Counter displayedCtr = new Counter();
@@ -47,7 +46,6 @@ public class UserInterface {
         ArrayList<ArrayList<String>> linesByChar = lines.stream()
                 .map(s -> s.chars()
                         .mapToObj(c -> (char) c)
-//                        .filter(c -> c != ' ')
                         .map(c -> {
                             if (c != ' '){
                                 if (displayedCtr.getValue() < failedCount){
@@ -74,19 +72,9 @@ public class UserInterface {
                 .map(inner -> inner.stream().reduce("",(a,b) -> a+b))
                 .reduce("", (a,b) -> a+b+'\n');
 
-        String head = failedCount >= 1 ? "O" : " ";
-        String body1 = failedCount >= 2 ? "|" : " ";
-        String body2 = failedCount >= 3 ? "|" : " ";
-
         result = "+" + "-".repeat(2+gallowsW) + "+\n" +
                 result +
                 " ".repeat(2+gallowsW) + "===";
-
-        String sb = "+---+\n" +
-                String.format("%s   |\n", head) +
-                String.format("%s   |\n", body1) +
-                String.format("%s   |\n", body2) +
-                "   ===\n";
 
         return result;
     }

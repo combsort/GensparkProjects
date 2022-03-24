@@ -2,6 +2,10 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.ArrayList;
+
 class HangmanGameTest {
 
     HangmanGame game;
@@ -58,5 +62,22 @@ class HangmanGameTest {
 
         game.addGuess('t');
         Assertions.assertTrue(game.gameIsEnded());
+    }
+
+    @Test
+    void getHighScore(){
+        ArrayList<String> lines = new ArrayList<>(Arrays.asList("high,1","2nd,2","3rd,3"));
+        Assertions.assertEquals(1,game.getHighScore(lines,""));
+        Assertions.assertEquals(1,game.getHighScore(lines,"high"));
+        Assertions.assertEquals(2,game.getHighScore(lines,"2nd"));
+        Assertions.assertEquals(3,game.getHighScore(lines,"3rd"));
+    }
+
+    @Test
+    void alreadyGuessed(){
+        game.addGuess('o');
+        Assertions.assertTrue(game.alreadyGuessed('o'));
+        Assertions.assertFalse(game.alreadyGuessed(' '));
+        Assertions.assertFalse(game.alreadyGuessed('f'));
     }
 }
