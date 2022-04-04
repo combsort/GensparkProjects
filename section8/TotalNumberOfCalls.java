@@ -5,6 +5,7 @@ import genspark.assignments.Assignment;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -16,61 +17,61 @@ import java.util.stream.Collectors;
 
 public class TotalNumberOfCalls implements Assignment {
 
-    public ArrayList<Character> readAFile(String str){
-        String pathname = str.equals("") ? "C:\\Genspark\\genspark-java-core\\genspark-java-core\\src\\main\\java\\genspark\\assignments\\section8/sample_data.txt" : str;
-        File file = new File(pathname);
-        ArrayList<String> contents = new ArrayList<>();
-        try (Scanner scanner = new Scanner(file)) {
-            while (scanner.hasNext()) {
-                String next = scanner.nextLine() + '\n';
-                contents.add(next);
-            }
-        } catch (IOException e) {
-            System.out.println("Failure opening file: " + e.getMessage());
-        }
-
-        ArrayList<Character> ret = (ArrayList<Character>) contents.stream()
-                .map(s -> s.chars().mapToObj(i->(char)i).collect(Collectors.toList()))
-                .reduce(new ArrayList<>(),(prevString,newString) ->{
-                    ArrayList<Character> a = new ArrayList<>(prevString);
-                    a.addAll(newString);
-                    return a;
-                });
-
-        return ret;
-    }
-
-    public String fileToStringArray(String str){
-        ArrayList<Character> result = readAFile(str);
-        return result.stream().map(Object::toString)
-                .reduce("",(a,b) -> a+b);
-    }
+//    public ArrayList<Character> readAFile(String str){
+//        String pathname = str.equals("") ? "C:\\Genspark\\genspark-java-core\\genspark-java-core\\src\\main\\java\\genspark\\assignments\\section8/sample_data.txt" : str;
+//        File file = new File(pathname);
+//        ArrayList<String> contents = new ArrayList<>();
+//        try (Scanner scanner = new Scanner(file)) {
+//            while (scanner.hasNext()) {
+//                String next = scanner.nextLine() + '\n';
+//                contents.add(next);
+//            }
+//        } catch (IOException e) {
+//            System.out.println("Failure opening file: " + e.getMessage());
+//        }
+//
+//        ArrayList<Character> ret = (ArrayList<Character>) contents.stream()
+//                .map(s -> s.chars().mapToObj(i->(char)i).collect(Collectors.toList()))
+//                .reduce(new ArrayList<>(),(prevString,newString) ->{
+//                    ArrayList<Character> a = new ArrayList<>(prevString);
+//                    a.addAll(newString);
+//                    return a;
+//                });
+//
+//        return ret;
+//    }
+//
+//    public String fileToStringArray(String str){
+//        ArrayList<Character> result = readAFile(str);
+//        return result.stream().map(Object::toString)
+//                .reduce("",(a,b) -> a+b);
+//    }
 
     public int solution() throws IOException {
-//        String callsPath = "C:\\Genspark\\genspark-java-core\\genspark-java-core\\src\\main\\resources\\calls.csv";
-//        String textsPath = "C:\\Genspark\\genspark-java-core\\genspark-java-core\\src\\main\\resources\\texts.csv";
-//
-//        String[] calls = fileToStringArray(callsPath).split("\n");
-//        String[] texts = fileToStringArray(textsPath).split("\n");
-//
-//        HashSet<String> numbers = new HashSet<>();
-//
-//        for (String call : calls){
-//            String[] data = call.split(",");
-//            String calling = data[0];
-//            String rcv = data[1];
-//            numbers.add(calling);
-//            numbers.add(rcv);
-//        }
-//        for (String text : texts){
-//            String[] data = text.split(",");
-//            String sender = data[0];
-//            String rcv = data[1];
-//            numbers.add(sender);
-//            numbers.add(rcv);
-//        }
+        String callsPath = "C:\\GenSpark\\genspark-java-core\\genspark-java-core\\genspark-java-core\\src\\main\\resources\\calls.csv";
+        String textsPath = "C:\\GenSpark\\genspark-java-core\\genspark-java-core\\genspark-java-core\\src\\main\\resources\\texts.csv";
 
-        return 0;//numbers.size();
+        String[] calls = Files.readString(Paths.get(callsPath), StandardCharsets.US_ASCII).split("\n");
+        String[] texts = Files.readString(Paths.get(textsPath), StandardCharsets.US_ASCII).split("\n");
+
+        HashSet<String> numbers = new HashSet<>();
+
+        for (String call : calls){
+            String[] data = call.split(",");
+            String calling = data[0];
+            String rcv = data[1];
+            numbers.add(calling);
+            numbers.add(rcv);
+        }
+        for (String text : texts){
+            String[] data = text.split(",");
+            String sender = data[0];
+            String rcv = data[1];
+            numbers.add(sender);
+            numbers.add(rcv);
+        }
+
+        return numbers.size();
     }
 }
 
